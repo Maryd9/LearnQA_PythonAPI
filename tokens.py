@@ -1,5 +1,3 @@
-from tabnanny import process_tokens
-
 import requests, time
 
 token = ''
