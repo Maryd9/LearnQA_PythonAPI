@@ -27,9 +27,9 @@ class TestExample:
                                 headers=user_agent_header)
         assert response.status_code == 200, "Wrong response code"
 
-        parametrs = json.loads(response.text)
-        print(parametrs)
+        parameters = json.loads(response.text)
 
-        for key, expected_value in expected_json.items():
-            assert key in parametrs, f"There is no parametr {key} in the response"
-            assert parametrs[key] == expected_value, f"For parametr {key} expected value {expected_value}, but got {parametrs[key]}"
+        for expected_parameter, expected_value in expected_json.items():
+            assert expected_parameter in parameters, f"There is no parameter {expected_parameter} in the response"
+            assert parameters[
+                       expected_parameter] == expected_value, f"For parameter {expected_parameter} expected value {expected_value}, but got {parameters[expected_parameter]}"
