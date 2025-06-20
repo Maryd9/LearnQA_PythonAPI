@@ -31,3 +31,22 @@ class Assertions:
     def assert_content(response: Response, expected_content):
         assert response.content.decode("utf-8") == expected_content,\
             f"Unexpected response content {response.content}"
+
+    @staticmethod
+    def assert_json_has_not_key(response: Response, name):
+        try:
+            response_as_dict = response.json()
+        except json.JSONDecodeError:
+            assert False, f"Response is not in JSON fromat. Response text is '{response.text}'"
+
+        assert name not in response_as_dict, f"Response JSON shouldn't have key '{name}'. But it's present"
+
+    @staticmethod
+    def assert_json_has_keys(response: Response, names: list):
+        try:
+            response_as_dict = response.json()
+        except json.JSONDecodeError:
+            assert False, f"Response is not in JSON fromat. Response text is '{response.text}'"
+
+        for name in names:
+            assert name in response_as_dict, f"Response JSON doesn't have key '{name}'"
