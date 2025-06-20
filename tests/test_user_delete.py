@@ -1,10 +1,12 @@
 from lib.base_case import BaseCase
 from lib.assertions import Assertions
 from lib.my_requests import MyRequests
-import requests
+import allure
 
 
+@allure.epic("Delete user cases")
 class TestUserDelete(BaseCase):
+    @allure.description("This test tries to delete user with id 2")
     def test_delete_user_with_id_2(self):
         # LOGIN
         login_data = {
@@ -33,6 +35,7 @@ class TestUserDelete(BaseCase):
             "Wrong error message"
         )
 
+    @allure.description("This test successfully deletes user")
     def test_delete_user_successfully(self):
         # REGISTER
         register_data = self.prepare_registration_data()
@@ -60,8 +63,8 @@ class TestUserDelete(BaseCase):
 
         # DELETE
         response3 = MyRequests.delete(f"/user/{user_id}",
-                                    headers={"x-csrf-token": token},
-                                    cookies={"auth_sid": auth_sid})
+                                      headers={"x-csrf-token": token},
+                                      cookies={"auth_sid": auth_sid})
 
         Assertions.assert_code_status(response3, 200)
         Assertions.assert_content(response3, '{"success":"!"}')
@@ -74,6 +77,7 @@ class TestUserDelete(BaseCase):
         Assertions.assert_code_status(response4, 404)
         Assertions.assert_content(response4, 'User not found')
 
+    @allure.description("This test tries to delete a user by logging in under another")
     def test_delete_user_with_another_auth(self):
         # REGISTER
         register_data = self.prepare_registration_data()
@@ -100,9 +104,9 @@ class TestUserDelete(BaseCase):
         Assertions.assert_code_status(response2, 200)
 
         # DELETE
-        response3 = MyRequests.delete(f"/user/{int(user_id)-1}",
-                                    headers={"x-csrf-token": token},
-                                    cookies={"auth_sid": auth_sid})
+        response3 = MyRequests.delete(f"/user/{int(user_id) - 1}",
+                                      headers={"x-csrf-token": token},
+                                      cookies={"auth_sid": auth_sid})
 
         Assertions.assert_code_status(response3, 400)
         Assertions.assert_json_value_by_name(
