@@ -43,7 +43,7 @@ class MyRequests():
         elif method == "PUT":
             response = requests.put(url, data=data, headers=headers, cookies=cookies)
         elif method == "DELETE":
-            response = requests.delete(url, data=data, headers=headers, cookies=cookies)
+            response = requests.delete(url, params=data, headers=headers, cookies=cookies)
         else:
             raise Exception(f"Bad HTTP method '{method}' was received")
 

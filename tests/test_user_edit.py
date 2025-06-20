@@ -35,16 +35,16 @@ class TestUserEdit(BaseCase):
         new_name = "Changed Name"
 
         response3 = MyRequests.put(f"/user/{self.user_id}",
-                                 headers={"x-csrf-token": token},
-                                 cookies={"auth_sid": auth_sid},
-                                 data={"firstName": new_name})
+                                   headers={"x-csrf-token": token},
+                                   cookies={"auth_sid": auth_sid},
+                                   data={"firstName": new_name})
 
         Assertions.assert_code_status(response3, 200)
 
         # GET
         response4 = MyRequests.get(f"/user/{self.user_id}",
-                                 headers={"x-csrf-token": token},
-                                 cookies={"auth_sid": auth_sid})
+                                   headers={"x-csrf-token": token},
+                                   cookies={"auth_sid": auth_sid})
 
         Assertions.assert_json_value_by_name(
             response4,
@@ -58,12 +58,18 @@ class TestUserEdit(BaseCase):
         new_name = "Changed Name"
 
         response3 = MyRequests.put(f"/user/{self.user_id}",
-                                 headers={"x-csrf-token": "360d9c46809155f647da48f1eaf82a853b5cb5c9f3bd3fd699529f5aa9c91232470ac153"},
-                                 cookies={"auth_sid": "09586d0fe18f8744087f3a589383204ef3bd3fd699529f5aa9c91232470ac053"},
-                                 data={"firstName": new_name})
+                                   headers={
+                                       "x-csrf-token": "360d9c46809155f647da48f1eaf82a853b5cb5c9f3bd3fd699529f5aa9c91232470ac153"},
+                                   cookies={
+                                       "auth_sid": "09586d0fe18f8744087f3a589383204ef3bd3fd699529f5aa9c91232470ac053"},
+                                   data={"firstName": new_name})
 
         Assertions.assert_code_status(response3, 400)
-        Assertions.assert_content(response3, '{"error":"Auth token not supplied"}')
+        expected_message = "Auth token not supplied"
+        Assertions.assert_json_value_by_name(response3,
+                                             "error",
+                                             expected_message,
+                                             f"Wrong error message, expected message {expected_message}")
 
     def test_edit_user_with_another_auth(self):
         # REGISTER2
@@ -91,12 +97,16 @@ class TestUserEdit(BaseCase):
         new_name = "New name"
 
         response4 = MyRequests.put(f"/user/{user_id2}",
-                                 headers={"x-csrf-token": token},
-                                 cookies={"auth_sid": auth_sid},
-                                 data={"firstName": new_name})
+                                   headers={"x-csrf-token": token},
+                                   cookies={"auth_sid": auth_sid},
+                                   data={"firstName": new_name})
 
         Assertions.assert_code_status(response4, 400)
-        Assertions.assert_content(response4, '{"error":"This user can only edit their own data."}')
+        expected_message = "This user can only edit their own data."
+        Assertions.assert_json_value_by_name(response4,
+                                              "error",
+                                             expected_message,
+                                             f"Wrong error message, expected message {expected_message}")
 
     def test_edit_email_user(self):
         # LOGIN
@@ -114,12 +124,16 @@ class TestUserEdit(BaseCase):
         new_email = "vinkotovexample.com"
 
         response3 = MyRequests.put(f"/user/{self.user_id}",
-                                 headers={"x-csrf-token": token},
-                                 cookies={"auth_sid": auth_sid},
-                                 data={"email": new_email})
+                                   headers={"x-csrf-token": token},
+                                   cookies={"auth_sid": auth_sid},
+                                   data={"email": new_email})
 
         Assertions.assert_code_status(response3, 400)
-        Assertions.assert_content(response3, '{"error":"Invalid email format"}')
+        expected_message = "Invalid email format"
+        Assertions.assert_json_value_by_name(response3,
+                                             "error",
+                                             expected_message,
+                                             f"Wrong error message, expected message {expected_message}")
 
     def test_edit_to_short_name(self):
         # LOGIN
@@ -137,9 +151,14 @@ class TestUserEdit(BaseCase):
         new_name = "1"
 
         response3 = MyRequests.put(f"/user/{self.user_id}",
-                                 headers={"x-csrf-token": token},
-                                 cookies={"auth_sid": auth_sid},
-                                 data={"firstName": new_name})
+                                   headers={"x-csrf-token": token},
+                                   cookies={"auth_sid": auth_sid},
+                                   data={"firstName": new_name})
 
         Assertions.assert_code_status(response3, 400)
-        Assertions.assert_content(response3, '{"error":"The value for field `firstName` is too short"}')
+        expected_message = "The value for field `firstName` is too short"
+        Assertions.assert_json_value_by_name(response3,
+                                             "error",
+                                             expected_message,
+                                             f"Wrong error message, expected message {expected_message}")
+
