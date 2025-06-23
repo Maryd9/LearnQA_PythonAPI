@@ -1,11 +1,13 @@
 import time
-
+import allure
+from allure_commons.types import Severity
 from lib.base_case import BaseCase
 from lib.assertions import Assertions
 from lib.my_requests import MyRequests
 
 
 class TestUserEdit(BaseCase):
+
     def setup_method(self):
         # REGISTER
         register_data = self.prepare_registration_data()
@@ -19,6 +21,10 @@ class TestUserEdit(BaseCase):
         self.password = register_data["password"]
         self.user_id = self.get_json_value(response1, "id")
 
+    @allure.testcase("https://testit.ru/projects/8236454/tests/123450", "Successful user edit")
+    @allure.tag("smoke", "regression", "edit")
+    @allure.severity(Severity.CRITICAL)
+    @allure.description("This test successfully edit the user")
     def test_edit_just_created_user(self):
         # LOGIN
         login_data = {
@@ -53,6 +59,10 @@ class TestUserEdit(BaseCase):
             "Wrong name of the user after edit"
         )
 
+    @allure.testcase("https://testit.ru/projects/8236454/tests/123451", "Сhange user without authorization")
+    @allure.tag("smoke", "regression", "edit")
+    @allure.severity(Severity.CRITICAL)
+    @allure.description("This test tries to edit a user without authorization")
     def test_edit_without_auth(self):
         # EDIT
         new_name = "Changed Name"
@@ -71,6 +81,10 @@ class TestUserEdit(BaseCase):
                                              expected_message,
                                              f"Wrong error message, expected message {expected_message}")
 
+    @allure.testcase("https://testit.ru/projects/8236454/tests/123452", "Сhange user under different authorization")
+    @allure.tag("regression", "edit")
+    @allure.severity(Severity.CRITICAL)
+    @allure.description("This test tries to edit a user by logging in under another")
     def test_edit_user_with_another_auth(self):
         # REGISTER2
         time.sleep(2)
@@ -104,10 +118,14 @@ class TestUserEdit(BaseCase):
         Assertions.assert_code_status(response4, 400)
         expected_message = "This user can only edit their own data."
         Assertions.assert_json_value_by_name(response4,
-                                              "error",
+                                             "error",
                                              expected_message,
                                              f"Wrong error message, expected message {expected_message}")
 
+    @allure.testcase("https://testit.ru/projects/8236454/tests/123453", "Editing email to incorrect format")
+    @allure.tag("edit")
+    @allure.severity(Severity.NORMAL)
+    @allure.description("The test tries to change the user's email to an incorrect one")
     def test_edit_email_user(self):
         # LOGIN
         login_data = {
@@ -135,6 +153,10 @@ class TestUserEdit(BaseCase):
                                              expected_message,
                                              f"Wrong error message, expected message {expected_message}")
 
+    @allure.testcase("https://testit.ru/projects/8236454/tests/123454", "Editing username to short name")
+    @allure.tag("edit")
+    @allure.severity(Severity.NORMAL)
+    @allure.description("The test tries to change the username to a short username")
     def test_edit_to_short_name(self):
         # LOGIN
         login_data = {
@@ -161,4 +183,3 @@ class TestUserEdit(BaseCase):
                                              "error",
                                              expected_message,
                                              f"Wrong error message, expected message {expected_message}")
-

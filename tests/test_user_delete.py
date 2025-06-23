@@ -1,11 +1,16 @@
+import allure
 from lib.base_case import BaseCase
 from lib.assertions import Assertions
 from lib.my_requests import MyRequests
-import allure
+from allure_commons.types import Severity
 
 
 @allure.epic("Delete user cases")
 class TestUserDelete(BaseCase):
+
+    @allure.testcase("https://testit.ru/projects/8236454/tests/123447", "Delete user with id 2")
+    @allure.tag("delete")
+    @allure.severity(Severity.NORMAL)
     @allure.description("This test tries to delete user with id 2")
     def test_delete_user_with_id_2(self):
         # LOGIN
@@ -35,6 +40,9 @@ class TestUserDelete(BaseCase):
             "Wrong error message"
         )
 
+    @allure.testcase("https://testit.ru/projects/8236454/tests/123448", "Successful user deletion")
+    @allure.tag("smoke", "regression", "delete")
+    @allure.severity(Severity.CRITICAL)
     @allure.description("This test successfully deletes user")
     def test_delete_user_successfully(self):
         # REGISTER
@@ -77,6 +85,9 @@ class TestUserDelete(BaseCase):
         Assertions.assert_code_status(response4, 404)
         Assertions.assert_content(response4, 'User not found')
 
+    @allure.testcase("https://testit.ru/projects/8236454/tests/123449", "Deleting a user with different authorization")
+    @allure.tag("regression", "delete")
+    @allure.severity(Severity.CRITICAL)
     @allure.description("This test tries to delete a user by logging in under another")
     def test_delete_user_with_another_auth(self):
         # REGISTER
